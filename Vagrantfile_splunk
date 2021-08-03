@@ -1,3 +1,4 @@
+# Version 0.1
 # Splunk install
 $splunkinstall = <<-SCRIPT
         # Package installing
