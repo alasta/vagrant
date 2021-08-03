@@ -1,17 +1,17 @@
 # Version 0.1
 # Splunk install
 $splunkinstall = <<-SCRIPT
-        # Package installing
-        sudo yum localinstall /vagrant/splunk-8.0.6-152fb4b2bb96-linux-2.6-x86_64.rpm -y
+  # Package installing
+  sudo yum localinstall /vagrant/splunk-8.0.6-152fb4b2bb96-linux-2.6-x86_64.rpm -y
   # Setup Splunk config
-        sudo /opt/splunk/bin/splunk enable boot-start -user splunk -systemd-managed 1 --accept-license  --seed-passwd changeme
+  sudo /opt/splunk/bin/splunk enable boot-start -user splunk -systemd-managed 1 --accept-license  --seed-passwd changeme
   sudo /opt/splunk/bin/splunk start  --no-prompt 
 SCRIPT
 
 # Command system/custom/add packages ....
 $systeminstall = <<-SCRIPT
-        #Set timezone
-        timedatectl set-timezone 'Europe/Paris'
+  #Set timezone
+  timedatectl set-timezone 'Europe/Paris'
 SCRIPT
 
 #Get IP to display after vagrant up
