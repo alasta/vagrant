@@ -1,18 +1,32 @@
-# Version 0.3
+# Version 0.4
 # Command system/custom/add packages ....
 $packagesinstall = <<-SCRIPT
+	# Package custom
+	sudo yum install -y lsof vim
+
+	# Package to Splunk health check iowait
+	sudo yum install -y sysstat
+
 	# Package installing
 	echo "# Splunk RPM installation"
-	sudo yum localinstall /vagrant/splunk-8.0.6-152fb4b2bb96-linux-2.6-x86_64.rpm -y
-
-  	# Setup Splunk config
+	sudo yum localinstall -y /vagrant/splunk-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm
+  
+	# Setup Splunk config
 	echo "# Set permissions on Splunk folder"
 	sudo chown -R vagrant:vagrant /opt/splunk
 
+	# Splunk apps :
+	# Manage min Free Space to POC instance
+	echo "# Set minFreeSpace to POC instance"
+	sudo mkdir -p /opt/splunk/etc/apps/my_customsplunk/local/
+	sudo echo  "[diskUsage]" > /opt/splunk/etc/apps/my_customsplunk/local/server.conf 
+	sudo echo  "minFreeSpace = 50" >> /opt/splunk/etc/apps/my_customsplunk/local/server.conf 
+
+
 	echo "# Splunk activation on boot with Vagrant user"
 	sudo /opt/splunk/bin/splunk enable boot-start  -systemd-managed 1 --accept-license -user vagrant --seed-passwd changeme
-	
-	echo "# Launch Splunk"
+
+  echo "# Launch Splunk"
 	sudo /opt/splunk/bin/splunk start  --no-prompt 
 SCRIPT
 
@@ -20,12 +34,15 @@ SCRIPT
 $getip= <<-SCRIPT
 	echo "IP of $(hostname) : "
 	ip -4 addr sh eth1
+	echo ""
+	echo "Splunk Version ; "
+	/opt/splunk/bin/splunk version
 SCRIPT
 
 #Message post up
 $postupmessage = <<-SCRIPT
 	Congratulations VM/box available.
-  	Generate by Vagrant !
+  Generate by Vagrant !
 SCRIPT
 
 #Customise OS env
@@ -46,6 +63,7 @@ $customenv= <<-SCRIPT
 
 SCRIPT
 
+
 #Config box
 Vagrant.configure("2") do |config|
 	config.vm.define "vm1" do |vm1|
@@ -53,14 +71,15 @@ Vagrant.configure("2") do |config|
  			v.memory = 2048
   		v.cpus = 2
 		end
-		vm1.vm.box = "centos/7"
+		#vm1.vm.box = "centos/7"
+		vm1.vm.box = "centos/8"
 		vm1.vm.hostname = 'vm1'
-		vm1.vm.box_url = "centos/7"
+		vm1.vm.box_url = "centos/8"
 		vm1.vm.network "forwarded_port", guest: 8000, host: 8000
 		# vm1.vm.network "forwarded_port", guest: 9997, host: 9997
 		vm1.vm.network "forwarded_port", guest: 8089, host: 8089 
 		vm1.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)", auto_config: false
-		vm1.vm.provision "file", source: "~/Downloads/splunk-8.0.6-152fb4b2bb96-linux-2.6-x86_64.rpm", destination: "/vagrant/"
+		vm1.vm.provision "file", source: "~/Downloads/splunk-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm", destination: "/vagrant/"
 		vm1.vm.provision "shell", inline: $packagesinstall
 		vm1.vm.provision "shell", inline: $customenv
 		vm1.vm.provision "shell", inline: $getip, run: "always"
