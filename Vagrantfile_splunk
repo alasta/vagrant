@@ -1,8 +1,8 @@
-# Version 0.4
+# Version 0.5
 # Command system/custom/add packages ....
 $packagesinstall = <<-SCRIPT
 	# Package custom
-	sudo yum install -y lsof vim
+	sudo yum install -y lsof vim git bind-utils
 
 	# Package to Splunk health check iowait
 	sudo yum install -y sysstat
