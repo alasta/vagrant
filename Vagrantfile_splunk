@@ -1,4 +1,4 @@
-# Version 0.5
+# Version 0.6
 # Command system/custom/add packages ....
 $packagesinstall = <<-SCRIPT
 	# Package custom
@@ -72,11 +72,8 @@ Vagrant.configure("2") do |config|
   		v.cpus = 2
 		end
 		vm1.vm.box = "centos/8"
-		vm1.vm.hostname = 'vm1'
+		vm1.vm.hostname = 'node1'
 		vm1.vm.box_url = "centos/8"
-		vm1.vm.network "forwarded_port", guest: 8000, host: 8000
-		# vm1.vm.network "forwarded_port", guest: 9997, host: 9997
-		vm1.vm.network "forwarded_port", guest: 8089, host: 8089 
 		vm1.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)", auto_config: false
 		vm1.vm.provision "file", source: "~/Downloads/splunk-8.2.1-ddff1c41e5cf-linux-2.6-x86_64.rpm", destination: "/vagrant/"
 		vm1.vm.provision "shell", inline: $packagesinstall
