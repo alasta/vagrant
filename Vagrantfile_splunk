@@ -1,6 +1,11 @@
 # Version 0.6
 # Command system/custom/add packages ....
 $packagesinstall = <<-SCRIPT
+
+	# Workaround Yum failed appstreams ... EOL Centos8
+	sudo sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+	sudo sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* 
+
 	# Package custom
 	sudo yum install -y lsof vim git bind-utils
 
